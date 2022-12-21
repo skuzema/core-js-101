@@ -1,3 +1,11 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable lines-between-class-members */
+/* eslint-disable nonblock-statement-body-position */
+/* eslint-disable comma-dangle */
+/* eslint-disable curly */
+/* eslint-disable prefer-template */
+/* eslint-disable object-shorthand */
+/* eslint-disable prefer-const */
 /* eslint-disable no-useless-constructor */
 /* eslint-disable no-use-before-define */
 /* eslint-disable class-methods-use-this */
@@ -117,87 +125,183 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
-/*
-class CssSelector {
-  constructor(value) {
-    this.value = value;
+class CssBuilder {
+  constructor(value = '') {
+    this.combineResult = '';
+    if (value) {
+      this.combineResult += value;
+    }
+    this.cssElement = '';
+    this.cssId = '';
+    this.cssClass = '';
+    this.cssAttr = '';
+    this.cssPseudoClass = '';
+    this.cssPseudoElement = '';
+    this.countElem = 0;
+    this.countId = 0;
+    this.countPseudoElem = 0;
+    this.order = [];
+  }
+
+  element(value) {
+    if (this.countElem === 1) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector'
+      );
+    }
+
+    if (this.order.length === 0) {
+      this.order.push(1);
+    } else {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    }
+
+    this.cssElement = value;
+    this.countElem += 1;
+    return this;
+  }
+
+  id(value) {
+    if (this.countId === 1) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector'
+      );
+    }
+
+    if (this.order.length === 0) {
+      this.order.push(2);
+    }
+    if (this.order[this.order.length - 1] > 2) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    } else {
+      this.order.push(2);
+    }
+
+    this.cssId = `#${value}`;
+    this.countId += 1;
+    return this;
+  }
+
+  class(value) {
+    if (this.order.length === 0) {
+      this.order.push(3);
+    }
+    if (this.order[this.order.length - 1] > 3) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    } else {
+      this.order.push(3);
+    }
+
+    this.cssClass += `.${value}`;
+    return this;
+  }
+
+  attr(value) {
+    if (this.order.length === 0) {
+      this.order.push(4);
+    }
+    if (this.order[this.order.length - 1] > 4) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    } else {
+      this.order.push(4);
+    }
+
+    this.cssAttr = `[${value}]`;
+    return this;
+  }
+
+  pseudoClass(value) {
+    if (this.order.length === 0) {
+      this.order.push(5);
+    }
+    if (this.order[this.order.length - 1] > 5) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    } else {
+      this.order.push(5);
+    }
+    this.cssPseudoClass += `:${value}`;
+    return this;
+  }
+
+  pseudoElement(value) {
+    if (this.countPseudoElem === 1) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector'
+      );
+    }
+
+    if (this.order.length === 0) {
+      this.order.push(6);
+    }
+
+    this.cssPseudoElement = `::${value}`;
+    this.countPseudoElem += 1;
+    return this;
   }
 
   stringify() {
-    return this.value;
+    const result = `${this.cssElement}${this.cssId}${this.cssClass}${this.cssAttr}${this.cssPseudoClass}${this.cssPseudoElement}${this.combineResult}`;
+    return result;
   }
 }
-
-class ElementSelector extends CssSelector {
-  constructor(value) {
-    super(value);
-  }
-}
-
-class IdSelector extends CssSelector {
-  constructor(value) {
-    super(`#${value}`);
-  }
-}
-
-class ClassSelector extends CssSelector {
-  constructor(value) {
-    super(`.${value}`);
-  }
-}
-
-class AttributeSelector extends CssSelector {
-  constructor(value) {
-    super(`[${value}]`);
-  }
-}
-
-class PseudoClassSelector extends CssSelector {
-  constructor(value) {
-    super(`:${value}`);
-  }
-}
-
-class PseudoElementSelector extends CssSelector {
-  constructor(value) {
-    super(`::${value}`);
-  }
-}
-
-class CombinationSelector extends CssSelector {
-  constructor(selector1, combinator, selector2) {
-    super(`${selector1.stringify()} ${combinator} ${selector2.stringify()}`);
-  }
-}
-*/
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    const tmp = new CssBuilder();
+    tmp.element(value);
+    return tmp;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const tmp = new CssBuilder();
+    tmp.id(value);
+    return tmp;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const tmp = new CssBuilder();
+    tmp.class(value);
+    return tmp;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const tmp = new CssBuilder();
+    tmp.attr(value);
+    return tmp;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const tmp = new CssBuilder();
+    tmp.pseudoClass(value);
+    return tmp;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const tmp = new CssBuilder();
+    tmp.pseudoElement(value);
+    return tmp;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  stringify() {
+    const tmp = new CssBuilder();
+    return tmp;
+  },
+
+  combine(selector1, combinator, selector2) {
+    const result = new CssBuilder(
+      `${selector1.stringify()} ${combinator} ${selector2.stringify()}`
+    );
+    return result;
   },
 };
 
