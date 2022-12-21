@@ -1,10 +1,13 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
+/* eslint-disable arrow-body-style */
+/* eslint-disable consistent-return */
 /* ************************************************************************************************
  *                                                                                                *
  * Please read the following tutorial before implementing tasks:                                   *
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise       *
  *                                                                                                *
  ************************************************************************************************ */
-
 
 /**
  * Return Promise object that is resolved with string value === 'Hooray!!! She said "Yes"!',
@@ -28,10 +31,19 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
+function willYouMarryMe(isPositiveAnswer) {
+  return new Promise((resolve, reject) => {
+    if (typeof isPositiveAnswer === 'boolean') {
+      if (isPositiveAnswer) {
+        resolve('Hooray!!! She said "Yes"!');
+      } else {
+        resolve('Oh no, she said "No".');
+      }
+    } else {
+      reject(new Error('Wrong parameter is passed! Ask her again.'));
+    }
+  });
 }
-
 
 /**
  * Return Promise object that should be resolved with array containing plain values.
@@ -48,8 +60,12 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  return new Promise((resolve, reject) => {
+    Promise.all(array)
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
+  });
 }
 
 /**
@@ -71,8 +87,8 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  return Promise.race(array);
 }
 
 /**
@@ -92,8 +108,29 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+function chainPromises(array, action, result = null) {
+  if (array.length === 0) {
+    return Promise.resolve(result);
+  }
+
+  return array[0]
+    .then((value) => {
+      try {
+        if (result === null) {
+          result = value;
+        } else {
+          result = action(result, value);
+        }
+      } catch (error) {
+        //
+      }
+
+      return chainPromises(array.slice(1), action, result);
+    })
+    .catch((error) => {
+      // Catch any rejected promises and continue processing the next one
+      return chainPromises(array.slice(1), action, result);
+    });
 }
 
 module.exports = {
