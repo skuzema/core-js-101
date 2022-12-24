@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-loop-func */
 /* eslint-disable eqeqeq */
@@ -437,8 +438,23 @@ function getCommonDirectoryPath(pathes) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const m = [];
+
+  for (let i = 0; i < m1.length; i++) {
+    m.push([]);
+    for (let j = 0; j < m2[0].length; j++) {
+      m[i][j] = 0;
+    }
+  }
+  for (let i = 0; i < m1.length; i++) {
+    for (let j = 0; j < m2[0].length; j++) {
+      for (let k = 0; k < m1[0].length; k++) {
+        m[i][j] += m1[i][k] * m2[k][j];
+      }
+    }
+  }
+  return m;
 }
 
 /**
@@ -471,8 +487,46 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  for (let i = 0; i < 3; i++) {
+    if (
+      position[i][0] === position[i][1] &&
+      position[i][1] === position[i][2] &&
+      position[i][0] !== undefined
+    ) {
+      return position[i][0];
+    }
+  }
+
+  // Check columns
+  for (let i = 0; i < 3; i++) {
+    if (
+      position[0][i] === position[1][i] &&
+      position[1][i] === position[2][i] &&
+      position[0][i] !== undefined
+    ) {
+      return position[0][i];
+    }
+  }
+
+  // Check diagonals
+  if (
+    position[0][0] === position[1][1] &&
+    position[1][1] === position[2][2] &&
+    position[0][0] !== undefined
+  ) {
+    return position[0][0];
+  }
+  if (
+    position[0][2] === position[1][1] &&
+    position[1][1] === position[2][0] &&
+    position[0][2] !== undefined
+  ) {
+    return position[0][2];
+  }
+
+  // No winner
+  return undefined;
 }
 
 module.exports = {
